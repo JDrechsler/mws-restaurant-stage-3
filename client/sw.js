@@ -1,3 +1,10 @@
+// TODO Defer Updates
+// Add functionality to defer updates until the user is connected:
+// If the user is not online, the app should notify the user that they are not connected,
+// and save the users' data to submit automatically when re-connected.
+// In this case, the review should be deferred and sent to the server when connection
+// is re - established(but the review should still be visible locally even before it gets to the server.)
+
 const staticCache = 'mws-p1-static-cache-1';
 const dynamicCache = 'mws-p1-dynamic-cache-1';
 const staticUrlsToCache = [
