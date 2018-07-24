@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Normalize.css for better cross-browser consistency -->
+  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <!-- Main CSS file -->
+  <link rel="stylesheet" href="css/styles.css" type="text/css">
+  <link rel="stylesheet" href="css/leaflet.css">
+  <!-- Source: http://www.iconarchive.com -->
+  <link rel="shortcut icon" href="./assets/restaurant.ico" type="image/x-icon">
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#3367D6" />
+  <title>Restaurant Info</title>
+</head>
+
+<body class="inside">
+  <!-- Beginning header -->
+  <header role="banner">
+    <!-- Beginning nav -->
+    <nav role="navigation">
+      <h1>
+        <a href="./">Restaurant Reviews</a>
+      </h1>
+    </nav>
+    <!-- Beginning breadcrumb -->
+    <ul id="breadcrumb">
+      <li>
+        <a href="./">Home</a>
+      </li>
+    </ul>
+    <!-- End breadcrumb -->
+    <!-- End nav -->
+  </header>
+  <!-- End header -->
+
+
+  <!-- Beginning main -->
+  <main id="maincontent" role="main">
+    <!-- Beginning map -->
+
+    <!-- End map -->
+    <!-- Beginning restaurant -->
+    <section id="restaurant-container">
+      <h1 id="restaurant-name" tabindex="0"></h1>
+      <div id="restaurant-img-cuisine">
+        <img id="restaurant-img" tabindex="0">
+        <p id="restaurant-cuisine" tabindex="0"></p>
+      </div>
+      <table id="restaurant-hours" tabindex="0"></table>
+      <p id="restaurant-address" tabindex="0"></p>
+      <a href="#reviews" tabindex="0" class="skip-link" aria-label="Skip embedded Google Maps and go to the reviews section">Skip maps, go to reviews section</a>
+      <div id="map" aria-label="This is the embedded google maps view of the restaurant address."></div>
+    </section>
+    <!-- end restaurant -->
+    <!-- Beginning reviews -->
+    <section id="reviews-container">
+      <ul id="reviews-list"></ul>
+    </section>
+    <!-- End reviews -->
+  </main>
+  <!-- End main -->
+
+  <!-- Beginning footer -->
+  <footer id="footer" role="contentinfo">
+    Copyright (c) 2018
+    <a href="./">
+      <strong>Restaurant Reviews</strong>
+    </a> All Rights Reserved.
+  </footer>
+  <!-- End footer -->
+
+  <!-- Beginning scripts -->
+  <!-- https://www.npmjs.com/package/idb-keyval -->
+  <script src="js/idb-keyval-iife.min.js"></script>
+  <!-- Map Box -->
+  <script src="js/leaflet.js"></script>
+  <!-- Database helpers -->
+  <script type="text/javascript" src="js/dbhelper.js"></script>
+  <!-- Main javascript file -->
+  <script type="text/javascript" src="js/restaurant_info.js"></script>
+
+  <!-- End scripts -->
+</body>
+
+</html>
