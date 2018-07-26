@@ -82,7 +82,7 @@ self.addEventListener('install', (/** @type {ExtendableEvent} */ event) => {
   event.waitUntil(cacheStaticRessources());
 });
 
-self.addEventListener('activate', (/** @type {Event} */ event) => {
+self.addEventListener('activate', () => {
   console.log('SW: Activate Event');
 });
 

@@ -5,7 +5,7 @@ var newMap;
 /**
  * Initialize map as soon as the page is loaded.
  */
-document.addEventListener('DOMContentLoaded', event => {
+document.addEventListener('DOMContentLoaded', () => {
   initMap();
 });
 
@@ -124,7 +124,7 @@ const fillRestaurantHoursHTML = (
  */
 const fillReviewsHTML = async () => {
   const id = Number(getParameterByName('id'));
-  /** @type {Array<Review>}*/ let reviews = await DBHelper.fetchReviewsById(id);
+  let reviews = await DBHelper.fetchReviewsById(id);
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';

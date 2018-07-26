@@ -157,7 +157,7 @@ class DBHelper {
   /**
    * Fetches reviews by given id
    * @param id {number}
-   * @returns {Promise<Review>}
+   * @returns {Promise<Array<Review>>}
    */
   static async fetchReviewsById(id) {
     const res = await fetch(
