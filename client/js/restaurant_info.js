@@ -1,4 +1,5 @@
 /** @type {Restaurant} */ let restaurant;
+/** @type {Array<Review>} */ let reviews;
 var newMap;
 
 /**
@@ -41,12 +42,9 @@ const fetchRestaurantFromURL = async () => {
     // restaurant already fetched!
     return self.restaurant;
   }
-  const id = getParameterByName('id');
-  if (!id) {
-    // no id found in URL
-    let error = 'No restaurant id in URL';
-    return error;
-  } else {
+  const id = Number(getParameterByName('id'));
+
+  if (id) {
     const restaurant = await DBHelper.fetchRestaurantById(id);
     self.restaurant = restaurant;
     if (!restaurant) {
@@ -55,6 +53,9 @@ const fetchRestaurantFromURL = async () => {
     }
     fillRestaurantHTML();
     return restaurant;
+  } else {
+    // no id found in URL
+    return 'No restaurant id in URL';
   }
 };
 
@@ -75,13 +76,9 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   /**@type {string} */
   const imgSrc = DBHelper.imageUrlForRestaurant(restaurant) + '_400.jpg';
-
   const imgSrc200 = imgSrc.replace('_400', '_200');
-  const imgSrc400 = imgSrc;
-
-  image.srcset = `${imgSrc200} 200w, ${imgSrc400} 400w`;
+  image.srcset = `${imgSrc200} 200w, ${imgSrc} 400w`;
   image.sizes = `(max-width: 350px) 200px, (min-width: 400px) 250px`;
-
   image.src = imgSrc;
   image.alt = DBHelper.imageAltForRestaurant(restaurant);
 
@@ -125,7 +122,9 @@ const fillRestaurantHoursHTML = (
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+const fillReviewsHTML = async () => {
+  const id = Number(getParameterByName('id'));
+  /** @type {Array<Review>}*/ let reviews = await DBHelper.fetchReviewsById(id);
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -149,6 +148,8 @@ const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 
 /**
  * Create review HTML and add it to the webpage.
+ * @param review {Review}
+ * @return {HTMLElement}
  */
 const createReviewHTML = review => {
   const li = document.createElement('li');
@@ -157,7 +158,8 @@ const createReviewHTML = review => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  const dateCreated = new Date(review.createdAt);
+  date.innerHTML = dateCreated.toLocaleString();
   li.appendChild(date);
 
   const rating = document.createElement('p');

@@ -55,8 +55,7 @@ const registerServiceWorker = () => {
  */
 const fetchNeighborhoods = async () => {
   try {
-    const neighborhoods = await DBHelper.fetchNeighborhoods();
-    self.neighborhoods = neighborhoods;
+    self.neighborhoods = await DBHelper.fetchNeighborhoods();
     fillNeighborhoodsHTML();
   } catch (error) {
     console.error(error);
@@ -65,7 +64,7 @@ const fetchNeighborhoods = async () => {
 
 /**
  * Set neighborhoods HTML.
- * @param {Array<string> neighborhoods}
+ * @param neighborhoods {Array<string>}
  */
 const fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
   const select = document.getElementById('neighborhoods-select');
@@ -82,8 +81,7 @@ const fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
  */
 const fetchCuisines = async () => {
   try {
-    const cuisines = await DBHelper.fetchCuisines();
-    self.cuisines = cuisines;
+    self.cuisines = await DBHelper.fetchCuisines();
     fillCuisinesHTML();
   } catch (error) {
     console.error(error);
@@ -133,7 +131,7 @@ const updateRestaurants = async () => {
 };
 
 const lazyLoadImages = () => {
-  var myLazyLoad = new LazyLoad({
+  new LazyLoad({
     elements_selector: '.lazy'
   });
 };
@@ -194,12 +192,10 @@ const createRestaurantHTML = restaurant => {
   image.className = 'restaurant-img lazy';
   /**@type {string} */
   const imgSrc = DBHelper.imageUrlForRestaurant(restaurant) + '_400.jpg';
-
   const imgSrc200 = imgSrc.replace('_400', '_200');
-  const imgSrc400 = imgSrc;
 
   image.setAttribute('data-src', imgSrc);
-  image.setAttribute('data-srcset', `${imgSrc200} 200w, ${imgSrc400} 400w`);
+  image.setAttribute('data-srcset', `${imgSrc200} 200w, ${imgSrc} 400w`);
   image.setAttribute(
     'data-sizes',
     `(max-width: 350px) 200px, (min-width: 400px) 250px`
@@ -210,7 +206,7 @@ const createRestaurantHTML = restaurant => {
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
-  name.tabIndex = '0';
+  name.tabIndex = 0;
   li.appendChild(name);
 
   const neighborhood = document.createElement('p');

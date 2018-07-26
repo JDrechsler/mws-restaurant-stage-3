@@ -12,8 +12,11 @@ interface Restaurant {
 }
 
 interface Review {
+  id: number;
+  restaurant_id:number;
+  createdAt:number;
+  updatedAt:number;
   comments: string;
-  date: string;
   name: string;
   rating: number;
 }

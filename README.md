@@ -47,7 +47,6 @@ Let's start with running commands in your terminal, known as command line interf
 debug: Environment : development
 debug: Port        : 1337
 
-
 ## Endpoints
 
 ### GET Endpoints

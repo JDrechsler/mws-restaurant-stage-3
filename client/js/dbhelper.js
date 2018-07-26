@@ -8,7 +8,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
 
   /**
@@ -18,15 +18,15 @@ class DBHelper {
   static async fetchRestaurants() {
     try {
       const restData = await idbKeyval.get('restaurantsData');
-      if (restData !== undefined) {
-        return restData;
-      } else {
-        const response = await fetch(DBHelper.DATABASE_URL);
+      if (restData === undefined) {
+        const response = await fetch(`${DBHelper.DATABASE_URL}/restaurants`);
         if (response.status === 200) {
           const data = await response.json();
           await idbKeyval.set('restaurantsData', data);
           return data;
         }
+      } else {
+        return restData;
       }
     } catch (error) {
       console.log(error);
@@ -40,7 +40,7 @@ class DBHelper {
   static async fetchRestaurantById(id) {
     try {
       const restaurants = await DBHelper.fetchRestaurants();
-      const restaurant = restaurants.find(r => r.id == id);
+      const restaurant = restaurants.find(r => r.id === id);
       if (restaurant) {
         // Got the restaurant
         return restaurant;
@@ -61,15 +61,14 @@ class DBHelper {
    */
   static async fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood) {
     try {
-      const restaurants = await DBHelper.fetchRestaurants();
-      let results = restaurants;
-      if (cuisine != 'all') {
+      let results = await DBHelper.fetchRestaurants();
+      if (cuisine !== 'all') {
         // filter by cuisine
-        results = results.filter(r => r.cuisine_type == cuisine);
+        results = results.filter(r => r.cuisine_type === cuisine);
       }
-      if (neighborhood != 'all') {
+      if (neighborhood !== 'all') {
         // filter by neighborhood
-        results = results.filter(r => r.neighborhood == neighborhood);
+        results = results.filter(r => r.neighborhood === neighborhood);
       }
       return results;
     } catch (error) {
@@ -85,15 +84,13 @@ class DBHelper {
   static async fetchNeighborhoods() {
     try {
       const restaurants = await DBHelper.fetchRestaurants();
+
       // Get all neighborhoods from all restaurants
       const neighborhoods = restaurants.map(
         (v, i) => restaurants[i].neighborhood
       );
       // Remove duplicates from neighborhoods
-      const uniqueNeighborhoods = neighborhoods.filter(
-        (v, i) => neighborhoods.indexOf(v) == i
-      );
-      return uniqueNeighborhoods;
+      return neighborhoods.filter((v, i) => neighborhoods.indexOf(v) === i);
     } catch (error) {
       return error;
     }
@@ -110,10 +107,7 @@ class DBHelper {
       // Get all cuisines from all restaurants
       const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type);
       // Remove duplicates from cuisines
-      const uniqueCuisines = cuisines.filter(
-        (v, i) => cuisines.indexOf(v) == i
-      );
-      return uniqueCuisines;
+      return cuisines.filter((v, i) => cuisines.indexOf(v) === i);
     } catch (error) {
       return error;
     }
@@ -147,7 +141,7 @@ class DBHelper {
    * Map marker for a restaurant.
    * @param {Restaurant} restaurant
    */
-  static mapMarkerForRestaurant(restaurant, map) {
+  static mapMarkerForRestaurant(restaurant) {
     const marker = new L.marker(
       [restaurant.latlng.lat, restaurant.latlng.lng],
       {
@@ -158,5 +152,17 @@ class DBHelper {
     );
     marker.addTo(newMap);
     return marker;
+  }
+
+  /**
+   * Fetches reviews by given id
+   * @param id {number}
+   * @returns {Promise<Review>}
+   */
+  static async fetchReviewsById(id) {
+    const res = await fetch(
+      `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`
+    );
+    return await res.json();
   }
 }
