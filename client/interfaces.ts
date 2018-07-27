@@ -1,5 +1,8 @@
 interface Restaurant {
   address: string;
+  createdAt:number;
+  updatedAt:number;
+  is_favorite:boolean;
   cuisine_type: string;
   id: number;
   imgAlt: string;

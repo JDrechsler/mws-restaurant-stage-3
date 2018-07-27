@@ -34,6 +34,13 @@ a img {
   border: none 0 #fff;
 }
 
+li .fav{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 58px;
+}
+
 /* Accessibility: darker color */
 .leaflet-container a {
   color: #005577 !important;
@@ -234,6 +241,7 @@ nav h1 a {
   padding: 0 30px 25px;
   text-align: left;
   max-width: 270px;
+  position: relative;
 }
 #restaurants-list .restaurant-img {
   background-color: #ccc;

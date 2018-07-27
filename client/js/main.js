@@ -188,6 +188,19 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 const createRestaurantHTML = restaurant => {
   const li = document.createElement('li');
+
+  const btnFav = document.createElement('btn');
+
+  const btnImg = document.createElement('img');
+  btnImg.src = restaurant.is_favorite
+    ? 'assets/notfavorite.svg'
+    : 'assets/favorite.svg';
+  btnImg.className = 'fav';
+  //TODO add alt text for ay11
+
+  btnFav.appendChild(btnImg);
+  li.appendChild(btnFav);
+
   const image = document.createElement('img');
   image.className = 'restaurant-img lazy';
   /**@type {string} */
