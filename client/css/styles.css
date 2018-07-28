@@ -34,12 +34,33 @@ a img {
   border: none 0 #fff;
 }
 
-li .fav{
+.fav{
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 58px;
+  height: 74px;
+  width: 77px;
+  background: transparent url('../assets/star_full.png') center/contain no-repeat;
+  border: 0;
+  overflow: hidden;
+  left: -5px;
+  top: -1px;
 }
+
+.notfav{
+  position: absolute;
+  height: 74px;
+  width: 77px;
+  background: transparent url('../assets/star_white.png') center/contain no-repeat;
+  border: 0;
+  overflow: hidden;
+  left: -5px;
+  top: -1px;
+}
+
+.notfav:hover{
+  background: transparent url('../assets/star_full.png') center/contain no-repeat;
+}
+
+
 
 /* Accessibility: darker color */
 .leaflet-container a {
@@ -335,6 +356,7 @@ nav h1 a {
 
 #restaurant-img-cuisine {
   grid-area: img-cuisine;
+  position: relative;
 }
 
 #restaurant-hours {
@@ -395,6 +417,13 @@ nav h1 a {
 }
 
 /* Media Queries */
+
+@media screen and (max-width: 399px) {
+  .fav, .notfav{
+    height: 52px;
+    width: 55px;
+  }
+}
 
 @media screen and (min-width: 400px) {
   main section #restaurants-list {

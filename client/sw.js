@@ -12,6 +12,8 @@ const staticUrlsToCache = [
   'index.html',
   'css/styles.css',
   'css/leaflet.css',
+  'assets/star_white.png',
+  'assets/star_full.png',
   'js/main.js',
   'js/dbhelper.js',
   '404.html',
@@ -23,11 +25,11 @@ const staticUrlsToCache = [
   'css/images/marker-shadow.png'
 ];
 
-const cacheStaticRessources = async () => {
+const cacheStaticResources = async () => {
   const cache = await caches.open(staticCache);
   try {
     await cache.addAll(staticUrlsToCache);
-    console.log('cached static ressources');
+    console.log('cached static resources');
   } catch (error) {
     console.log(`An error happened during static assets caching: ${error}`);
   }
@@ -36,7 +38,7 @@ const cacheStaticRessources = async () => {
 /**
  * @param {RequestInfo} request
  */
-const useRessourceStrategy = async request => {
+const useResourceStrategy = async request => {
   try {
     /**
      * @type {Response | undefined}
@@ -53,7 +55,7 @@ const useRessourceStrategy = async request => {
         // use offline fallback page
         return await caches.match('404.html');
       } else {
-        addRessourceToDynamicCache(request, fetchResponse.clone());
+        addResourceToDynamicCache(request, fetchResponse.clone());
         return fetchResponse;
       }
     }
@@ -68,7 +70,7 @@ const useRessourceStrategy = async request => {
  * @param {RequestInfo} request
  * @param {Response} res
  */
-const addRessourceToDynamicCache = async (request, res) => {
+const addResourceToDynamicCache = async (request, res) => {
   try {
     const dynCache = await caches.open(dynamicCache);
     dynCache.put(request, res);
@@ -79,7 +81,7 @@ const addRessourceToDynamicCache = async (request, res) => {
 
 self.addEventListener('install', (/** @type {ExtendableEvent} */ event) => {
   console.log('SW: Install Event');
-  event.waitUntil(cacheStaticRessources());
+  event.waitUntil(cacheStaticResources());
 });
 
 self.addEventListener('activate', () => {
@@ -88,6 +90,6 @@ self.addEventListener('activate', () => {
 
 self.addEventListener('fetch', (/** @type {FetchEvent} */ event) => {
   if (event.request.url.startsWith(self.location.origin)) {
-    event.respondWith(useRessourceStrategy(event.request));
+    event.respondWith(useResourceStrategy(event.request));
   }
 });

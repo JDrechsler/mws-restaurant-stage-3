@@ -189,18 +189,6 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
 const createRestaurantHTML = restaurant => {
   const li = document.createElement('li');
 
-  const btnFav = document.createElement('btn');
-
-  const btnImg = document.createElement('img');
-  btnImg.src = restaurant.is_favorite
-    ? 'assets/notfavorite.svg'
-    : 'assets/favorite.svg';
-  btnImg.className = 'fav';
-  //TODO add alt text for ay11
-
-  btnFav.appendChild(btnImg);
-  li.appendChild(btnFav);
-
   const image = document.createElement('img');
   image.className = 'restaurant-img lazy';
   /**@type {string} */
@@ -234,6 +222,20 @@ const createRestaurantHTML = restaurant => {
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.appendChild(more);
+
+  const btnFav = document.createElement('button');
+  btnFav.setAttribute(
+    'aria-label',
+    'Use this button to toggle the favorite status of this restaurant.'
+  );
+
+  if (restaurant.is_favorite) {
+    btnFav.className = 'fav';
+  } else {
+    btnFav.className = 'notfav';
+  }
+
+  li.appendChild(btnFav);
 
   return li;
 };

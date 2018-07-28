@@ -82,6 +82,20 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.src = imgSrc;
   image.alt = DBHelper.imageAltForRestaurant(restaurant);
 
+  const btnFav = document.createElement('button');
+  btnFav.setAttribute(
+    'aria-label',
+    'Use this button to toggle the favorite status of this restaurant.'
+  );
+
+  if (restaurant.is_favorite) {
+    btnFav.className = 'fav';
+  } else {
+    btnFav.className = 'notfav';
+  }
+
+  document.getElementById('restaurant-img-cuisine').appendChild(btnFav);
+
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.setAttribute('aria-label', `Cuisine: ${restaurant.cuisine_type}`);
   cuisine.innerHTML = restaurant.cuisine_type;
