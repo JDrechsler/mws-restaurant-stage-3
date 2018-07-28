@@ -235,6 +235,19 @@ const createRestaurantHTML = restaurant => {
     btnFav.className = 'notfav';
   }
 
+  btnFav.addEventListener('click', async () => {
+    if (restaurant.is_favorite) {
+      self.restaurants[restaurant.id - 1].is_favorite = false;
+      await DBHelper.unmarkRestaurantAsFavorite(restaurant);
+      btnFav.className = 'notfav';
+    } else {
+      self.restaurants[restaurant.id - 1].is_favorite = true;
+      await DBHelper.markRestaurantAsFavorite(restaurant);
+      btnFav.className = 'fav';
+    }
+    DBHelper.updateIDB(self.restaurants);
+  });
+
   li.appendChild(btnFav);
 
   return li;

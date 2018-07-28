@@ -165,4 +165,41 @@ class DBHelper {
     );
     return await res.json();
   }
+
+  /**
+   * Mark restaurant as favorite
+   * @param restaurant {Restaurant}
+   * @returns {Promise<void>}
+   */
+  static async markRestaurantAsFavorite(restaurant) {
+    await fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/`, {
+      method: 'POST',
+      body: JSON.stringify({
+        is_favorite: true
+      })
+    });
+  }
+
+  /**
+   * Unmark restaurant as favorite
+   * @param restaurant {Restaurant}
+   * @returns {Promise<void>}
+   */
+  static async unmarkRestaurantAsFavorite(restaurant) {
+    await fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/`, {
+      method: 'POST',
+      body: JSON.stringify({
+        is_favorite: false
+      })
+    });
+  }
+
+  /**
+   * Updates the stored idb
+   * @param restaurants {Array<Restaurant>}
+   * @returns {Promise<void>}
+   */
+  static async updateIDB(restaurants) {
+    await idbKeyval.set('restaurantsData', restaurants);
+  }
 }
