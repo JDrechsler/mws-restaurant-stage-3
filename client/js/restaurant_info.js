@@ -1,12 +1,14 @@
 /** @type {Restaurant} */ let restaurant;
+/** @type {Array<Restaurant>} */ let restaurants;
 /** @type {Array<Review>} */ let reviews;
 var newMap;
 
 /**
  * Initialize map as soon as the page is loaded.
  */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initMap();
+  self.restaurants = await DBHelper.fetchRestaurants();
 });
 
 const initMap = async () => {
@@ -93,6 +95,19 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   } else {
     btnFav.className = 'notfav';
   }
+
+  btnFav.addEventListener('click', async () => {
+    if (restaurant.is_favorite) {
+      self.restaurants[restaurant.id - 1].is_favorite = false;
+      await DBHelper.unmarkRestaurantAsFavorite(restaurant);
+      btnFav.className = 'notfav';
+    } else {
+      self.restaurants[restaurant.id - 1].is_favorite = true;
+      await DBHelper.markRestaurantAsFavorite(restaurant);
+      btnFav.className = 'fav';
+    }
+    DBHelper.updateIDB(self.restaurants);
+  });
 
   document.getElementById('restaurant-img-cuisine').appendChild(btnFav);
 
