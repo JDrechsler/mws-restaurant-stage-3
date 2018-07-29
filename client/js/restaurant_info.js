@@ -120,7 +120,7 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  fillReviewsHTML(restaurant);
 };
 
 /**
@@ -150,8 +150,11 @@ const fillRestaurantHoursHTML = (
 
 /**
  * Create all reviews HTML and add them to the webpage.
+ *
+ * @return {Promise<void>}
+ * @param restaurant {Restaurant}
  */
-const fillReviewsHTML = async () => {
+const fillReviewsHTML = async restaurant => {
   const id = Number(getParameterByName('id'));
   let reviews = await DBHelper.fetchReviewsById(id);
   const container = document.getElementById('reviews-container');
@@ -172,7 +175,7 @@ const fillReviewsHTML = async () => {
 
   //TODO add review form here
 
-  ul.appendChild(await createAddReviewHTML(id));
+  ul.appendChild(await createAddReviewHTML(restaurant));
 
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
@@ -212,9 +215,9 @@ const createReviewHTML = review => {
 /**
  * Create add review HTML and add it to the webpage.
  * @return {Promise<HTMLElement>}
- * @param reviewsId {number}
+ * @param restaurant {Restaurant}
  */
-const createAddReviewHTML = async reviewsId => {
+const createAddReviewHTML = async restaurant => {
   //TODO add a11y for screen readers
   //TODO check tab order
 
@@ -223,7 +226,7 @@ const createAddReviewHTML = async reviewsId => {
   const userRating = document.createElement('p');
   userRating.className = 'userRating';
 
-  const ratings = await DBHelper.fetchReviewsById(reviewsId);
+  const ratings = await DBHelper.fetchReviewsById(restaurant.id);
   let sumRatings = 0;
   for (let currRating of ratings) {
     sumRatings += Number(currRating.rating);
@@ -236,7 +239,9 @@ const createAddReviewHTML = async reviewsId => {
   li.appendChild(userRating);
 
   const header = document.createElement('h3');
-  header.innerText = 'Add own review';
+  header.innerText = `Add own review for: ${restaurant.name} (ID: ${
+    restaurant.id
+  })`;
   li.appendChild(header);
 
   // const date = document.createElement('p');
@@ -245,8 +250,10 @@ const createAddReviewHTML = async reviewsId => {
   // li.appendChild(date);
 
   const rating = document.createElement('p');
-  rating.innerText = `Enter your rating: `;
+  rating.innerText = `Your rating: `;
   li.appendChild(rating);
+
+  li.appendChild(buildRatingsHTML());
 
   const comments = document.createElement('p');
   comments.innerText = 'Enter a comment: ';
@@ -261,9 +268,47 @@ const createAddReviewHTML = async reviewsId => {
   return li;
 };
 
+/**
+ * Builds ratings element and returns it
+ * @returns {HTMLElement}
+ */
 const buildRatingsHTML = () => {
   const ratingsDiv = document.createElement('div');
-  ratingsDiv.id = 'rating';
+  ratingsDiv.id = 'star-rating';
+
+  //initial idea from https://stackoverflow.com/questions/49218516/creating-simple-star-rating-using-click-event-javascript#
+
+  ratingsDiv.addEventListener('click', event => {
+    let performAction = 'add';
+    for (const span of ratingsDiv.children) {
+      span.classList[performAction]('star_full');
+      if (span === event.target) {
+        performAction = 'remove';
+      }
+    }
+
+    let amountStars = 0;
+    ratingsDiv.childNodes.forEach(n => {
+      if (n.className === 'spanStar star_full') {
+        amountStars += 1;
+      }
+    });
+
+    console.log('Amount stars: ' + amountStars);
+    document.getElementById('ratingChoice').textContent = `(${amountStars})`;
+  });
+
+  for (let i = 0; i < 5; i++) {
+    const spanEl = document.createElement('span');
+    spanEl.className = 'spanStar';
+    ratingsDiv.appendChild(spanEl);
+  }
+
+  const spanRatingChoice = document.createElement('span');
+  spanRatingChoice.id = 'ratingChoice';
+  ratingsDiv.appendChild(spanRatingChoice);
+
+  return ratingsDiv;
 };
 
 /**

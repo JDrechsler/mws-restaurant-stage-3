@@ -411,6 +411,20 @@ nav h1 a {
   min-height: 80px;
 }
 
+#star-rating .spanStar {
+  font-size: 30px;
+}
+#star-rating .spanStar::before {
+  content: "☆";
+}
+#star-rating .spanStar.star_full::before {
+  content: "★";
+}
+
+#ratingChoice{
+  font-size: 26px;
+}
+
 /* Footer */
 
 #footer {
