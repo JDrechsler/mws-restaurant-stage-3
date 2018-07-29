@@ -67,11 +67,11 @@ const fetchRestaurantFromURL = async () => {
 const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.setAttribute('aria-label', `Restaurant: ${restaurant.name}`);
-  name.innerHTML = restaurant.name;
+  name.innerText = restaurant.name;
 
   const address = document.getElementById('restaurant-address');
   address.setAttribute('aria-label', `Address: ${restaurant.address}`);
-  address.innerHTML = restaurant.address;
+  address.innerText = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img';
@@ -113,7 +113,7 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.setAttribute('aria-label', `Cuisine: ${restaurant.cuisine_type}`);
-  cuisine.innerHTML = restaurant.cuisine_type;
+  cuisine.innerText = restaurant.cuisine_type;
 
   // fill operating hours
   if (restaurant.operating_hours) {
@@ -137,11 +137,11 @@ const fillRestaurantHoursHTML = (
   for (let key in operatingHours) {
     const row = document.createElement('tr');
     const day = document.createElement('td');
-    day.innerHTML = key;
+    day.innerText = key;
     row.appendChild(day);
 
     const time = document.createElement('td');
-    time.innerHTML = operatingHours[key];
+    time.innerText = operatingHours[key];
     row.appendChild(time);
 
     hours.appendChild(row);
@@ -156,19 +156,24 @@ const fillReviewsHTML = async () => {
   let reviews = await DBHelper.fetchReviewsById(id);
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
-  title.innerHTML = 'Reviews';
+  title.innerText = 'Reviews';
   title.tabIndex = 0;
   title.id = 'reviews';
   container.appendChild(title);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
+    noReviews.innerText = 'No reviews yet!';
     noReviews.tabIndex = 0;
     container.appendChild(noReviews);
     return;
   }
   const ul = document.getElementById('reviews-list');
+
+  //TODO add review form here
+
+  ul.appendChild(await createAddReviewHTML(id));
+
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
@@ -183,24 +188,82 @@ const fillReviewsHTML = async () => {
 const createReviewHTML = review => {
   const li = document.createElement('li');
   const name = document.createElement('p');
-  name.innerHTML = review.name;
+  name.innerText = review.name;
   li.appendChild(name);
 
   const date = document.createElement('p');
   const dateCreated = new Date(review.createdAt);
-  date.innerHTML = dateCreated.toLocaleString();
+  date.innerText = dateCreated.toLocaleString();
   li.appendChild(date);
 
   const rating = document.createElement('p');
-  rating.innerHTML = `Rating: ${review.rating}`;
+  rating.innerText = `Rating: ${'★'.repeat(review.rating)}`;
+  rating.setAttribute('aria-label', `${review.rating} stars`);
   li.appendChild(rating);
 
   const comments = document.createElement('p');
-  comments.innerHTML = review.comments;
+  comments.innerText = review.comments;
   li.tabIndex = 0;
   li.appendChild(comments);
 
   return li;
+};
+
+/**
+ * Create add review HTML and add it to the webpage.
+ * @return {Promise<HTMLElement>}
+ * @param reviewsId {number}
+ */
+const createAddReviewHTML = async reviewsId => {
+  //TODO add a11y for screen readers
+  //TODO check tab order
+
+  const li = document.createElement('li');
+
+  const userRating = document.createElement('p');
+  userRating.className = 'userRating';
+
+  const ratings = await DBHelper.fetchReviewsById(reviewsId);
+  let sumRatings = 0;
+  for (let currRating of ratings) {
+    sumRatings += Number(currRating.rating);
+  }
+  const averageRating = sumRatings / ratings.length;
+
+  userRating.textContent = `User Rating: ${'★'.repeat(
+    Number(averageRating.toPrecision(1))
+  )} (${averageRating.toFixed(1)}) based on ${ratings.length} reviews.`;
+  li.appendChild(userRating);
+
+  const header = document.createElement('h3');
+  header.innerText = 'Add own review';
+  li.appendChild(header);
+
+  // const date = document.createElement('p');
+  // const dateCreated = new Date(Date.now());
+  // date.innerHTML = dateCreated.toLocaleString();
+  // li.appendChild(date);
+
+  const rating = document.createElement('p');
+  rating.innerText = `Enter your rating: `;
+  li.appendChild(rating);
+
+  const comments = document.createElement('p');
+  comments.innerText = 'Enter a comment: ';
+  li.tabIndex = 0;
+  li.appendChild(comments);
+
+  const commentTextArea = document.createElement('textarea');
+  commentTextArea.className = 'addReviewTextArea';
+
+  li.appendChild(commentTextArea);
+
+  return li;
+};
+
+const buildRatingsHTML = () => {
+  const ratingsDiv = document.createElement('div');
+  ratingsDiv.id = 'rating';
 };
 
 /**
@@ -209,7 +272,7 @@ const createReviewHTML = review => {
 const fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
-  li.innerHTML = restaurant.name;
+  li.innerText = restaurant.name;
   breadcrumb.appendChild(li);
 };
 

@@ -70,7 +70,7 @@ const fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
   const select = document.getElementById('neighborhoods-select');
   neighborhoods.forEach(neighborhood => {
     const option = document.createElement('option');
-    option.innerHTML = neighborhood;
+    option.innerText = neighborhood;
     option.value = neighborhood;
     select.appendChild(option);
   });
@@ -97,7 +97,7 @@ const fillCuisinesHTML = (cuisines = self.cuisines) => {
 
   cuisines.forEach(cuisine => {
     const option = document.createElement('option');
-    option.innerHTML = cuisine;
+    option.innerText = cuisine;
     option.value = cuisine;
     select.appendChild(option);
   });
@@ -160,7 +160,7 @@ const resetRestaurants = restaurants => {
   // Remove all restaurants
   self.restaurants = [];
   const ul = document.getElementById('restaurants-list');
-  ul.innerHTML = '';
+  ul.innerText = '';
 
   // Remove all map markers
   if (self.markers) {
@@ -206,20 +206,20 @@ const createRestaurantHTML = restaurant => {
   li.appendChild(image);
 
   const name = document.createElement('h1');
-  name.innerHTML = restaurant.name;
+  name.innerText = restaurant.name;
   name.tabIndex = 0;
   li.appendChild(name);
 
   const neighborhood = document.createElement('p');
-  neighborhood.innerHTML = restaurant.neighborhood;
+  neighborhood.innerText = restaurant.neighborhood;
   li.appendChild(neighborhood);
 
   const address = document.createElement('p');
-  address.innerHTML = restaurant.address;
+  address.innerText = restaurant.address;
   li.appendChild(address);
 
   const more = document.createElement('a');
-  more.innerHTML = 'View Details';
+  more.innerText = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.appendChild(more);
 

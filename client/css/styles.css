@@ -400,8 +400,15 @@ nav h1 a {
   position: relative;
   width: 85%;
 }
-#reviews-list li p {
-  margin: 0 0 10px;
+
+.userRating{
+  font-size: 16px;
+}
+
+.addReviewTextArea{
+  width: 100%;
+  resize: vertical;
+  min-height: 80px;
 }
 
 /* Footer */
