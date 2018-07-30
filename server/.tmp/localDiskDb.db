@@ -47,7 +47,7 @@
           "Sunday": "12:00 pm - 3:00 pm, 5:00 pm - 11:00 pm"
         },
         "createdAt": 1504095568414,
-        "updatedAt": "2018-07-28T21:31:23.866Z",
+        "updatedAt": "2018-07-30T19:43:54.802Z",
         "is_favorite": false,
         "id": 2
       },
@@ -522,6 +522,42 @@
         "updatedAt": 1504095567183,
         "rating": 4,
         "comments": "For a Michelin star restaurant, it's fairly priced and the food is fairly good. Started with a strawberry margarita which was good in flavor but not much alcohol. Had the chicken enchiladas with salsa verde and it was really good. Great balance in flavor and a good portion. Extra tasty with their hot sauces. My wife had the lamb but it was a bit too salty for our taste. Although, it was cooked very well and fell off the bone. The highlight of the night was the tres leches cake. Probably the best I've ever had to be honest. Not too sweet and very milky. Overall, one of my top 3 favorite Mexican in NY."
+      },
+      {
+        "restaurant_id": 2,
+        "name": "Johannes",
+        "rating": 5,
+        "comments": "I really liked it here!",
+        "createdAt": "2018-07-30T19:33:18.258Z",
+        "updatedAt": "2018-07-30T19:33:18.258Z",
+        "id": 31
+      },
+      {
+        "restaurant_id": 2,
+        "name": "Thomas",
+        "rating": 3,
+        "comments": "Hmmm it was alright.",
+        "createdAt": "2018-07-30T19:57:06.738Z",
+        "updatedAt": "2018-07-30T19:57:06.738Z",
+        "id": 32
+      },
+      {
+        "restaurant_id": 2,
+        "name": "Pascal",
+        "rating": 5,
+        "comments": "Awesome Pizza Place!!!",
+        "createdAt": "2018-07-30T20:25:09.326Z",
+        "updatedAt": "2018-07-30T20:25:09.326Z",
+        "id": 33
+      },
+      {
+        "restaurant_id": 2,
+        "name": "Anonymous",
+        "rating": 1,
+        "comments": "Did not like it at all.",
+        "createdAt": "2018-07-30T20:27:20.210Z",
+        "updatedAt": "2018-07-30T20:27:20.210Z",
+        "id": 34
       }
     ]
   },
@@ -577,7 +613,7 @@
       "id": 10
     },
     "reviews": {
-      "id": 30
+      "id": 34
     }
   }
 }

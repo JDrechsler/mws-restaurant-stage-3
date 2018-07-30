@@ -186,12 +186,16 @@ class DBHelper {
    * @returns {Promise<void>}
    */
   static async unmarkRestaurantAsFavorite(restaurant) {
-    await fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/`, {
-      method: 'POST',
-      body: JSON.stringify({
-        is_favorite: false
-      })
-    });
+    try {
+      await fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/`, {
+        method: 'POST',
+        body: JSON.stringify({
+          is_favorite: false
+        })
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /**
@@ -201,5 +205,29 @@ class DBHelper {
    */
   static async updateIDB(restaurants) {
     await idbKeyval.set('restaurantsData', restaurants);
+  }
+
+  /**
+   * Adds a new review to the DB
+   * @param restaurant_id {number}
+   * @param reviewer_name {string}
+   * @param rating {number}
+   * @param comment {string}
+   * @returns {Promise<void>}
+   */
+  static async addReviewToDB(restaurant_id, reviewer_name, rating, comment) {
+    try {
+      await fetch(`${DBHelper.DATABASE_URL}/reviews/`, {
+        method: 'POST',
+        body: JSON.stringify({
+          restaurant_id: restaurant_id,
+          name: reviewer_name,
+          rating: rating,
+          comments: comment
+        })
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

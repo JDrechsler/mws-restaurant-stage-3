@@ -177,6 +177,16 @@ const fillReviewsHTML = async restaurant => {
 
   ul.appendChild(await createAddReviewHTML(restaurant));
 
+  document.getElementById('ratingChoice').textContent = countStars().toString();
+
+  reviews.forEach(r => {
+    if (typeof r.createdAt === 'string') {
+      r.createdAt = Date.parse(r.createdAt);
+    }
+  });
+
+  reviews.sort((a, b) => b.createdAt - a.createdAt);
+
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
@@ -213,6 +223,27 @@ const createReviewHTML = review => {
 };
 
 /**
+ * Submits the review
+ * @param restaurant {Restaurant}
+ */
+const submitReview = async restaurant => {
+  const reviewer_name = document.getElementById('user').value;
+  const comment = document.getElementById('reviewComment').value;
+  const rating = Number(document.getElementById('ratingChoice').innerText);
+
+  if (reviewer_name.length < 1 || comment.left < 1) {
+    alert('Please make sure to enter your name and a comment.');
+    return;
+  }
+
+  console.log(`${reviewer_name}, ${restaurant.id}, ${rating}, ${comment}`);
+  await DBHelper.addReviewToDB(restaurant.id, reviewer_name, rating, comment);
+  console.log('New Review added to DB');
+
+  //TODO add review to view
+};
+
+/**
  * Create add review HTML and add it to the webpage.
  * @return {Promise<HTMLElement>}
  * @param restaurant {Restaurant}
@@ -244,26 +275,28 @@ const createAddReviewHTML = async restaurant => {
   })`;
   li.appendChild(header);
 
-  // const date = document.createElement('p');
-  // const dateCreated = new Date(Date.now());
-  // date.innerHTML = dateCreated.toLocaleString();
-  // li.appendChild(date);
+  const username = document.createElement('input');
+  username.id = 'user';
+  username.placeholder = 'Enter your name';
 
-  const rating = document.createElement('p');
-  rating.innerText = `Your rating: `;
-  li.appendChild(rating);
+  li.appendChild(username);
 
   li.appendChild(buildRatingsHTML());
 
-  const comments = document.createElement('p');
-  comments.innerText = 'Enter a comment: ';
-  li.tabIndex = 0;
-  li.appendChild(comments);
-
   const commentTextArea = document.createElement('textarea');
   commentTextArea.className = 'addReviewTextArea';
-
+  commentTextArea.id = 'reviewComment';
+  commentTextArea.placeholder = 'Enter your comment';
   li.appendChild(commentTextArea);
+
+  const submitReviewBtn = document.createElement('button');
+  submitReviewBtn.textContent = 'Submit Review';
+  submitReviewBtn.addEventListener('click', () => {
+    console.log('clicked');
+    submitReview(restaurant);
+  });
+
+  li.appendChild(submitReviewBtn);
 
   return li;
 };
@@ -294,13 +327,17 @@ const buildRatingsHTML = () => {
       }
     });
 
-    console.log('Amount stars: ' + amountStars);
-    document.getElementById('ratingChoice').textContent = `(${amountStars})`;
+    document.getElementById(
+      'ratingChoice'
+    ).textContent = amountStars.toString();
   });
 
   for (let i = 0; i < 5; i++) {
     const spanEl = document.createElement('span');
     spanEl.className = 'spanStar';
+    if (i === 0) {
+      spanEl.className = 'spanStar star_full';
+    }
     ratingsDiv.appendChild(spanEl);
   }
 
@@ -309,6 +346,20 @@ const buildRatingsHTML = () => {
   ratingsDiv.appendChild(spanRatingChoice);
 
   return ratingsDiv;
+};
+
+/**
+ * Returns amount stars selected
+ */
+const countStars = () => {
+  const ratingsDiv = document.getElementById('star-rating');
+  let amountStars = 0;
+  ratingsDiv.childNodes.forEach(n => {
+    if (n.className === 'spanStar star_full') {
+      amountStars += 1;
+    }
+  });
+  return amountStars;
 };
 
 /**
