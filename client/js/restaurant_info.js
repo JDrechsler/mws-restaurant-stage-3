@@ -275,6 +275,8 @@ const createAddReviewHTML = async restaurant => {
   const li = document.createElement('li');
   li.id = 'addReviewForm';
 
+  //TODO add elements to a form element
+
   const userRating = document.createElement('p');
   userRating.id = 'userRating';
   li.appendChild(userRating);
@@ -302,6 +304,7 @@ const createAddReviewHTML = async restaurant => {
   li.appendChild(commentTextArea);
 
   const submitReviewBtn = document.createElement('button');
+  //TODO add input type submit and replace onclick with submit function
   submitReviewBtn.textContent = 'Submit Review';
   submitReviewBtn.setAttribute('aria-label', 'Submit your review');
   submitReviewBtn.addEventListener('click', () => {
