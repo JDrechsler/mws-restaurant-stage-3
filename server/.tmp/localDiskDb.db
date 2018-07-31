@@ -558,6 +558,15 @@
         "createdAt": "2018-07-30T20:27:20.210Z",
         "updatedAt": "2018-07-30T20:27:20.210Z",
         "id": 34
+      },
+      {
+        "restaurant_id": 2,
+        "name": "Peter",
+        "rating": 5,
+        "comments": "Love this place!!!",
+        "createdAt": "2018-07-30T23:27:07.711Z",
+        "updatedAt": "2018-07-30T23:27:07.711Z",
+        "id": 35
       }
     ]
   },
@@ -613,7 +622,7 @@
       "id": 10
     },
     "reviews": {
-      "id": 34
+      "id": 35
     }
   }
 }

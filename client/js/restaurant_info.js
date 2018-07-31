@@ -64,7 +64,7 @@ const fetchRestaurantFromURL = async () => {
 /**
  * Create restaurant HTML and add it to the webpage
  */
-const fillRestaurantHTML = (restaurant = self.restaurant) => {
+const fillRestaurantHTML = async (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.setAttribute('aria-label', `Restaurant: ${restaurant.name}`);
   name.innerText = restaurant.name;
@@ -120,7 +120,8 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML(restaurant);
+  await fillReviewsHTML(restaurant);
+  updateAverageRatingView();
 };
 
 /**
@@ -173,8 +174,6 @@ const fillReviewsHTML = async restaurant => {
   }
   const ul = document.getElementById('reviews-list');
 
-  //TODO add review form here
-
   ul.appendChild(await createAddReviewHTML(restaurant));
 
   document.getElementById('ratingChoice').textContent = countStars().toString();
@@ -191,6 +190,18 @@ const fillReviewsHTML = async restaurant => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
+};
+
+/**
+ * Adds a custom review to the reviews list
+ */
+const addCustomReviewToView = review => {
+  const ul = document.getElementById('reviews-list');
+  ul.insertBefore(
+    createReviewHTML(review),
+    ul.firstElementChild.nextElementSibling
+  );
+  updateAverageRatingView();
 };
 
 /**
@@ -240,7 +251,19 @@ const submitReview = async restaurant => {
   await DBHelper.addReviewToDB(restaurant.id, reviewer_name, rating, comment);
   console.log('New Review added to DB');
 
-  //TODO add review to view
+  const review = {
+    name: reviewer_name,
+    createdAt: Date.now(),
+    rating: rating,
+    comments: comment
+  };
+  addCustomReviewToView(review);
+  emptyReviewForm();
+};
+
+const emptyReviewForm = () => {
+  document.getElementById('user').value = '';
+  document.getElementById('reviewComment').value = '';
 };
 
 /**
@@ -253,20 +276,10 @@ const createAddReviewHTML = async restaurant => {
   //TODO check tab order
 
   const li = document.createElement('li');
+  li.id = 'addReviewForm';
 
   const userRating = document.createElement('p');
-  userRating.className = 'userRating';
-
-  const ratings = await DBHelper.fetchReviewsById(restaurant.id);
-  let sumRatings = 0;
-  for (let currRating of ratings) {
-    sumRatings += Number(currRating.rating);
-  }
-  const averageRating = sumRatings / ratings.length;
-
-  userRating.textContent = `User Rating: ${'★'.repeat(
-    Number(averageRating.toPrecision(1))
-  )} (${averageRating.toFixed(1)}) based on ${ratings.length} reviews.`;
+  userRating.id = 'userRating';
   li.appendChild(userRating);
 
   const header = document.createElement('h3');
@@ -299,6 +312,32 @@ const createAddReviewHTML = async restaurant => {
   li.appendChild(submitReviewBtn);
 
   return li;
+};
+
+/**
+ * Returns average reviews rating from db
+ * @returns {Promise<number>}
+ */
+const getAverageRating = async () => {
+  const ratings = await DBHelper.fetchReviewsById(self.restaurant.id);
+  let sumRatings = 0;
+  for (let currRating of ratings) {
+    sumRatings += Number(currRating.rating);
+  }
+  return sumRatings / ratings.length;
+};
+
+/**
+ * Updates shown reviews average
+ * @returns {Promise<void>}
+ */
+const updateAverageRatingView = async () => {
+  const averageRating = await getAverageRating();
+  const ratings = await DBHelper.fetchReviewsById(self.restaurant.id);
+  const userRatingEl = document.getElementById('userRating');
+  userRatingEl.textContent = `User Rating: ${'★'.repeat(
+    Number(averageRating.toPrecision(1))
+  )} (${averageRating.toFixed(1)}) based on ${ratings.length} reviews.`;
 };
 
 /**
