@@ -244,8 +244,8 @@ const submitReview = async restaurant => {
   const comment = document.getElementById('reviewComment').value;
   const rating = Number(document.getElementById('ratingChoice').innerText);
 
-  if (reviewer_name.length < 1 || comment.left < 1) {
-    alert('Please make sure to enter your name and a comment.');
+  if (reviewer_name.length < 1) {
+    alert('Please make sure to enter your name');
     return;
   }
 
@@ -258,7 +258,7 @@ const submitReview = async restaurant => {
   addCustomReviewToView(review);
   emptyReviewForm();
 
-  // await DBHelper.addReviewToDB(restaurant.id, reviewer_name, rating, comment);
+  await DBHelper.addReviewToDB(restaurant.id, reviewer_name, rating, comment);
 };
 
 const emptyReviewForm = () => {
@@ -273,46 +273,44 @@ const emptyReviewForm = () => {
  */
 const createAddReviewHTML = async restaurant => {
   const li = document.createElement('li');
-  li.id = 'addReviewForm';
+  li.id = 'addReviewformLi';
 
-  //TODO add elements to a form element
+  const formEl = document.createElement('form');
+  formEl.onsubmit = event => event.preventDefault();
 
   const userRating = document.createElement('p');
   userRating.id = 'userRating';
-  li.appendChild(userRating);
+  formEl.appendChild(userRating);
 
   const header = document.createElement('h3');
   header.innerText = `Add own review for: ${restaurant.name} (ID: ${
     restaurant.id
   })`;
-  li.appendChild(header);
+  formEl.appendChild(header);
 
   const username = document.createElement('input');
   username.id = 'user';
   username.placeholder = 'Enter your name';
   username.setAttribute('aria-label', 'Enter your name');
 
-  li.appendChild(username);
-
-  li.appendChild(buildRatingsHTML());
+  formEl.appendChild(username);
+  formEl.appendChild(buildRatingsHTML());
 
   const commentTextArea = document.createElement('textarea');
   commentTextArea.className = 'addReviewTextArea';
   commentTextArea.id = 'reviewComment';
   commentTextArea.placeholder = 'Enter your comment';
   commentTextArea.setAttribute('aria-label', 'Enter your comment here.');
-  li.appendChild(commentTextArea);
+  formEl.appendChild(commentTextArea);
 
-  const submitReviewBtn = document.createElement('button');
-  //TODO add input type submit and replace onclick with submit function
-  submitReviewBtn.textContent = 'Submit Review';
-  submitReviewBtn.setAttribute('aria-label', 'Submit your review');
-  submitReviewBtn.addEventListener('click', () => {
-    console.log('clicked');
-    submitReview(restaurant);
-  });
+  const submitReviewEL = document.createElement('button');
+  submitReviewEL.textContent = 'Submit Review';
+  submitReviewEL.setAttribute('aria-label', 'Submit your review');
+  submitReviewEL.addEventListener('click', () => submitReview(restaurant));
 
-  li.appendChild(submitReviewBtn);
+  formEl.appendChild(submitReviewEL);
+
+  li.appendChild(formEl);
 
   return li;
 };

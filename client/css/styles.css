@@ -391,7 +391,7 @@ nav h1 a {
 }
 #reviews-list li {
   background-color: #fff;
-  border: 2px solid #f3f3f3;
+  border: 1px solid #ccc;
   display: block;
   list-style-type: none;
   margin: 0 0 30px;
@@ -409,6 +409,11 @@ nav h1 a {
   width: 100%;
   resize: vertical;
   min-height: 80px;
+}
+
+#reviews-list > #addReviewformLi{
+  background-color: transparent;
+  border: 1px solid #ccc;
 }
 
 #star-rating .buttonStar {
