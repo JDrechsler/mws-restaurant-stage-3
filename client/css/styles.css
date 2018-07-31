@@ -411,13 +411,15 @@ nav h1 a {
   min-height: 80px;
 }
 
-#star-rating .spanStar {
+#star-rating .buttonStar {
   font-size: 30px;
+  background: transparent;
+  border: none;
 }
-#star-rating .spanStar::before {
+#star-rating .buttonStar::before {
   content: "☆";
 }
-#star-rating .spanStar.star_full::before {
+#star-rating .buttonStar.star_full::before {
   content: "★";
 }
 

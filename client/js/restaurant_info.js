@@ -158,6 +158,7 @@ const fillRestaurantHoursHTML = (
 const fillReviewsHTML = async restaurant => {
   const id = Number(getParameterByName('id'));
   let reviews = await DBHelper.fetchReviewsById(id);
+  self.reviews = reviews;
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerText = 'Reviews';
@@ -196,6 +197,7 @@ const fillReviewsHTML = async restaurant => {
  * Adds a custom review to the reviews list
  */
 const addCustomReviewToView = review => {
+  self.reviews.push(review);
   const ul = document.getElementById('reviews-list');
   ul.insertBefore(
     createReviewHTML(review),
@@ -247,10 +249,6 @@ const submitReview = async restaurant => {
     return;
   }
 
-  console.log(`${reviewer_name}, ${restaurant.id}, ${rating}, ${comment}`);
-  await DBHelper.addReviewToDB(restaurant.id, reviewer_name, rating, comment);
-  console.log('New Review added to DB');
-
   const review = {
     name: reviewer_name,
     createdAt: Date.now(),
@@ -259,6 +257,8 @@ const submitReview = async restaurant => {
   };
   addCustomReviewToView(review);
   emptyReviewForm();
+
+  // await DBHelper.addReviewToDB(restaurant.id, reviewer_name, rating, comment);
 };
 
 const emptyReviewForm = () => {
@@ -272,9 +272,6 @@ const emptyReviewForm = () => {
  * @param restaurant {Restaurant}
  */
 const createAddReviewHTML = async restaurant => {
-  //TODO add a11y for screen readers
-  //TODO check tab order
-
   const li = document.createElement('li');
   li.id = 'addReviewForm';
 
@@ -291,6 +288,7 @@ const createAddReviewHTML = async restaurant => {
   const username = document.createElement('input');
   username.id = 'user';
   username.placeholder = 'Enter your name';
+  username.setAttribute('aria-label', 'Enter your name');
 
   li.appendChild(username);
 
@@ -300,10 +298,12 @@ const createAddReviewHTML = async restaurant => {
   commentTextArea.className = 'addReviewTextArea';
   commentTextArea.id = 'reviewComment';
   commentTextArea.placeholder = 'Enter your comment';
+  commentTextArea.setAttribute('aria-label', 'Enter your comment here.');
   li.appendChild(commentTextArea);
 
   const submitReviewBtn = document.createElement('button');
   submitReviewBtn.textContent = 'Submit Review';
+  submitReviewBtn.setAttribute('aria-label', 'Submit your review');
   submitReviewBtn.addEventListener('click', () => {
     console.log('clicked');
     submitReview(restaurant);
@@ -315,29 +315,20 @@ const createAddReviewHTML = async restaurant => {
 };
 
 /**
- * Returns average reviews rating from db
- * @returns {Promise<number>}
- */
-const getAverageRating = async () => {
-  const ratings = await DBHelper.fetchReviewsById(self.restaurant.id);
-  let sumRatings = 0;
-  for (let currRating of ratings) {
-    sumRatings += Number(currRating.rating);
-  }
-  return sumRatings / ratings.length;
-};
-
-/**
  * Updates shown reviews average
  * @returns {Promise<void>}
  */
 const updateAverageRatingView = async () => {
-  const averageRating = await getAverageRating();
-  const ratings = await DBHelper.fetchReviewsById(self.restaurant.id);
+  const reviews = self.reviews;
+  let sumRatings = 0;
+  for (let currReview of reviews) {
+    sumRatings += Number(currReview.rating);
+  }
+  const averageRating = sumRatings / reviews.length;
   const userRatingEl = document.getElementById('userRating');
   userRatingEl.textContent = `User Rating: ${'★'.repeat(
     Number(averageRating.toPrecision(1))
-  )} (${averageRating.toFixed(1)}) based on ${ratings.length} reviews.`;
+  )} (${averageRating.toFixed(1)}) based on ${reviews.length} reviews.`;
 };
 
 /**
@@ -352,16 +343,16 @@ const buildRatingsHTML = () => {
 
   ratingsDiv.addEventListener('click', event => {
     let performAction = 'add';
-    for (const span of ratingsDiv.children) {
-      span.classList[performAction]('star_full');
-      if (span === event.target) {
+    for (const button of ratingsDiv.children) {
+      button.classList[performAction]('star_full');
+      if (button === event.target) {
         performAction = 'remove';
       }
     }
 
     let amountStars = 0;
     ratingsDiv.childNodes.forEach(n => {
-      if (n.className === 'spanStar star_full') {
+      if (n.className === 'buttonStar star_full') {
         amountStars += 1;
       }
     });
@@ -371,13 +362,16 @@ const buildRatingsHTML = () => {
     ).textContent = amountStars.toString();
   });
 
-  for (let i = 0; i < 5; i++) {
-    const spanEl = document.createElement('span');
-    spanEl.className = 'spanStar';
-    if (i === 0) {
-      spanEl.className = 'spanStar star_full';
+  for (let i = 1; i <= 5; i++) {
+    const buttonEl = document.createElement('button');
+    buttonEl.className = 'buttonStar';
+    buttonEl.tabIndex = 0;
+    buttonEl.setAttribute('aria-label', `${i} Stars`);
+    if (i === 1) {
+      buttonEl.className = 'buttonStar star_full';
+      buttonEl.setAttribute('aria-label', '1 Star');
     }
-    ratingsDiv.appendChild(spanEl);
+    ratingsDiv.appendChild(buttonEl);
   }
 
   const spanRatingChoice = document.createElement('span');
@@ -394,7 +388,7 @@ const countStars = () => {
   const ratingsDiv = document.getElementById('star-rating');
   let amountStars = 0;
   ratingsDiv.childNodes.forEach(n => {
-    if (n.className === 'spanStar star_full') {
+    if (n.className === 'buttonStar star_full') {
       amountStars += 1;
     }
   });

@@ -19,7 +19,7 @@ const staticUrlsToCache = [
   'css/images/marker-shadow.png',
   'js/main.js',
   'js/dbhelper.js',
-  'restaurant_info.js',
+  'js/restaurant_info.js',
   'js/idb-keyval-iife.min.js',
   'js/leaflet.js',
   'restaurant.html',
