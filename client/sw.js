@@ -14,15 +14,17 @@ const staticUrlsToCache = [
   'css/leaflet.css',
   'assets/star_white.png',
   'assets/star_full.png',
+  'assets/restaurant.ico',
+  'css/images/marker-icon.png',
+  'css/images/marker-shadow.png',
   'js/main.js',
   'js/dbhelper.js',
-  '404.html',
-  'offline.html',
-  'restaurant.html',
+  'restaurant_info.js',
   'js/idb-keyval-iife.min.js',
   'js/leaflet.js',
-  'css/images/marker-icon.png',
-  'css/images/marker-shadow.png'
+  'restaurant.html',
+  '404.html',
+  'offline.html'
 ];
 
 const cacheStaticResources = async () => {
