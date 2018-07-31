@@ -24,7 +24,8 @@ const staticUrlsToCache = [
   'js/leaflet.js',
   'restaurant.html',
   '404.html',
-  'offline.html'
+  'offline.html',
+  'manifest.json'
 ];
 
 const cacheStaticResources = async () => {

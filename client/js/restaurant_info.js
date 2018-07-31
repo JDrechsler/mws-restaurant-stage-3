@@ -33,7 +33,7 @@ const initMap = async () => {
     }
   ).addTo(newMap);
   fillBreadcrumb();
-  DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
+  DBHelper.mapMarkerForRestaurant(self.restaurant);
 };
 
 /**
@@ -50,7 +50,7 @@ const fetchRestaurantFromURL = async () => {
     const restaurant = await DBHelper.fetchRestaurantById(id);
     self.restaurant = restaurant;
     if (!restaurant) {
-      console.error(error);
+      console.error('No restaurants found');
       return;
     }
     fillRestaurantHTML();
