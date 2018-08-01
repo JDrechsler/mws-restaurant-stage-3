@@ -236,9 +236,26 @@ const createReviewHTML = review => {
 };
 
 /**
+ * Updates the reviews in idb that are ready to be synced by service worker
+ * @param review
+ * @returns {Promise<void>}
+ */
+const updateReviewsReadyForSyncIDB = async review => {
+  const getReviewsReadyForSync = await idbKeyval.get('reviewsReadyForSync');
+  if (getReviewsReadyForSync === undefined) {
+    let reviewsReadyForSync = [];
+    reviewsReadyForSync.push(review);
+    idbKeyval.set('reviewsReadyForSync', reviewsReadyForSync);
+  } else {
+    let reviewsReadyForSync = [...getReviewsReadyForSync, review];
+    idbKeyval.set('reviewsReadyForSync', reviewsReadyForSync);
+  }
+};
+
+/**
  * Submits the review
  */
-const submitReview = () => {
+const submitReview = async () => {
   const reviewer_name = document.getElementById('user').value;
   const comment = document.getElementById('reviewComment').value;
   const rating = Number(document.getElementById('ratingChoice').innerText);
@@ -260,9 +277,9 @@ const submitReview = () => {
   addCustomReviewToView(review);
 
   DBHelper.updateReviewsIDB(review);
-  emptyReviewForm();
 
-  // await DBHelper.addReviewToDB(restaurant.id, reviewer_name, rating, comment);
+  updateReviewsReadyForSyncIDB(review);
+  emptyReviewForm();
 };
 
 const emptyReviewForm = () => {

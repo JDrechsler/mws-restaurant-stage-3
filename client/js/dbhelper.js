@@ -228,30 +228,6 @@ class DBHelper {
   }
 
   /**
-   * Adds a new review to the DB
-   * @param restaurant_id {number}
-   * @param reviewer_name {string}
-   * @param rating {number}
-   * @param comment {string}
-   * @returns {Promise<void>}
-   */
-  static async addReviewToDB(restaurant_id, reviewer_name, rating, comment) {
-    try {
-      await fetch(`${DBHelper.DATABASE_URL}/reviews/`, {
-        method: 'POST',
-        body: JSON.stringify({
-          restaurant_id: restaurant_id,
-          name: reviewer_name,
-          rating: rating,
-          comments: comment
-        })
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  /**
    * Updates the reviews entries in idb
    * @param review {Review}
    * @returns {Promise<void>}

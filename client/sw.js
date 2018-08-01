@@ -5,6 +5,8 @@
 // In this case, the review should be deferred and sent to the server when connection
 // is re - established(but the review should still be visible locally even before it gets to the server.)
 
+importScripts('js/idb-keyval-iife.min.js', 'js/dbhelper.js');
+
 const staticCache = 'mws-p1-static-cache-1';
 const dynamicCache = 'mws-p1-dynamic-cache-1';
 const staticUrlsToCache = [
@@ -106,4 +108,39 @@ self.addEventListener('sync', event => {
 
 const syncTest = async () => {
   console.log('Syncing Reviews...');
+  const reviewsReadyForSync = await idbKeyval.get('reviewsReadyForSync');
+  if (reviewsReadyForSync === undefined) {
+    console.log(
+      'No reviews found in idb that are ready to be synced with server.'
+    );
+  } else {
+    reviewsReadyForSync.forEach(review => {
+      console.log(review);
+      //TODO sync with server
+    });
+  }
+};
+
+/**
+ * Adds a new review to the DB
+ * @param restaurant_id {number}
+ * @param reviewer_name {string}
+ * @param rating {number}
+ * @param comment {string}
+ * @returns {Promise<void>}
+ */
+const addReviewToDB = async (restaurant_id, reviewer_name, rating, comment) => {
+  try {
+    await fetch(`${DBHelper.DATABASE_URL}/reviews/`, {
+      method: 'POST',
+      body: JSON.stringify({
+        restaurant_id: restaurant_id,
+        name: reviewer_name,
+        rating: rating,
+        comments: comment
+      })
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
