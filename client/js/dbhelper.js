@@ -155,15 +155,35 @@ class DBHelper {
   }
 
   /**
+   * Fetch all reviews.
+   * @returns {Promise<Array<Review>>}
+   */
+  static async fetchReviews() {
+    try {
+      const reviewsData = await idbKeyval.get('reviewsData');
+      if (reviewsData === undefined) {
+        const response = await fetch(`${DBHelper.DATABASE_URL}/reviews`);
+        if (response.status === 200) {
+          const data = await response.json();
+          await idbKeyval.set('reviewsData', data);
+          return data;
+        }
+      } else {
+        return reviewsData;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  /**
    * Fetches reviews by given id
    * @param id {number}
    * @returns {Promise<Array<Review>>}
    */
   static async fetchReviewsById(id) {
-    const res = await fetch(
-      `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`
-    );
-    return await res.json();
+    const reviews = await DBHelper.fetchReviews();
+    return reviews.filter(r => r.restaurant_id === id);
   }
 
   /**
@@ -199,11 +219,11 @@ class DBHelper {
   }
 
   /**
-   * Updates the stored idb
+   * Updates the stored restaurants in idb
    * @param restaurants {Array<Restaurant>}
    * @returns {Promise<void>}
    */
-  static async updateIDB(restaurants) {
+  static async updateRestaurantsIDB(restaurants) {
     await idbKeyval.set('restaurantsData', restaurants);
   }
 
@@ -228,6 +248,27 @@ class DBHelper {
       });
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  /**
+   * Updates the reviews entries in idb
+   * @param review {Review}
+   * @returns {Promise<void>}
+   */
+  static async updateReviewsIDB(review) {
+    const currentStateReviewsIDB = await idbKeyval.get('reviewsData');
+    if (currentStateReviewsIDB === undefined) {
+      console.log('reviewsData was not found in idb');
+    } else {
+      const lastEntry =
+        currentStateReviewsIDB[currentStateReviewsIDB.length - 1];
+      review.id = lastEntry.id + 1;
+      let newStateReviewsIDB = [...currentStateReviewsIDB, review];
+      await idbKeyval.set('reviewsData', newStateReviewsIDB);
+      navigator.serviceWorker.ready.then(swReg => {
+        return swReg.sync.register('syncReviews');
+      });
     }
   }
 }

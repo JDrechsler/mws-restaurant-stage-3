@@ -96,3 +96,14 @@ self.addEventListener('fetch', (/** @type {FetchEvent} */ event) => {
     event.respondWith(useResourceStrategy(event.request));
   }
 });
+
+self.addEventListener('sync', event => {
+  console.log(event);
+  if (event.tag === 'syncReviews') {
+    event.waitUntil(syncTest());
+  }
+});
+
+const syncTest = async () => {
+  console.log('Syncing Reviews...');
+};

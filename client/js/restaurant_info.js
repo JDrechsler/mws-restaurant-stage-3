@@ -106,7 +106,7 @@ const fillRestaurantHTML = async (restaurant = self.restaurant) => {
       await DBHelper.markRestaurantAsFavorite(restaurant);
       btnFav.className = 'fav';
     }
-    DBHelper.updateIDB(self.restaurants);
+    DBHelper.updateRestaurantsIDB(self.restaurants);
   });
 
   document.getElementById('restaurant-img-cuisine').appendChild(btnFav);
@@ -237,9 +237,8 @@ const createReviewHTML = review => {
 
 /**
  * Submits the review
- * @param restaurant {Restaurant}
  */
-const submitReview = async restaurant => {
+const submitReview = () => {
   const reviewer_name = document.getElementById('user').value;
   const comment = document.getElementById('reviewComment').value;
   const rating = Number(document.getElementById('ratingChoice').innerText);
@@ -250,15 +249,20 @@ const submitReview = async restaurant => {
   }
 
   const review = {
+    id: 0,
+    restaurant_id: self.restaurant.id,
     name: reviewer_name,
     createdAt: Date.now(),
+    updatedAt: Date.now(),
     rating: rating,
     comments: comment
   };
   addCustomReviewToView(review);
+
+  DBHelper.updateReviewsIDB(review);
   emptyReviewForm();
 
-  await DBHelper.addReviewToDB(restaurant.id, reviewer_name, rating, comment);
+  // await DBHelper.addReviewToDB(restaurant.id, reviewer_name, rating, comment);
 };
 
 const emptyReviewForm = () => {

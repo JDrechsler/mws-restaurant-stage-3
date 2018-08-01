@@ -245,7 +245,7 @@ const createRestaurantHTML = restaurant => {
       await DBHelper.markRestaurantAsFavorite(restaurant);
       btnFav.className = 'fav';
     }
-    DBHelper.updateIDB(self.restaurants);
+    DBHelper.updateRestaurantsIDB(self.restaurants);
   });
 
   li.appendChild(btnFav);
