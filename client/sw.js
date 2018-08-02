@@ -1,10 +1,3 @@
-// TODO Defer Updates
-// Add functionality to defer updates until the user is connected:
-// If the user is not online, the app should notify the user that they are not connected,
-// and save the users' data to submit automatically when re-connected.
-// In this case, the review should be deferred and sent to the server when connection
-// is re - established(but the review should still be visible locally even before it gets to the server.)
-
 importScripts('js/idb-keyval-iife.min.js', 'js/dbhelper.js');
 
 const staticCache = 'mws-p1-static-cache-1';
@@ -99,15 +92,22 @@ self.addEventListener('fetch', (/** @type {FetchEvent} */ event) => {
   }
 });
 
+const removeItemsFromIDB = async () => {
+  idbKeyval.del('reviewsReadyForSync');
+  console.log('Removed outgoing items for service worker from idb');
+};
+
 self.addEventListener('sync', event => {
   console.log(event);
   if (event.tag === 'syncReviews') {
     event.waitUntil(syncTest());
+    removeItemsFromIDB();
   }
 });
 
 const syncTest = async () => {
   console.log('Syncing Reviews...');
+
   const reviewsReadyForSync = await idbKeyval.get('reviewsReadyForSync');
   if (reviewsReadyForSync === undefined) {
     console.log(
@@ -115,8 +115,12 @@ const syncTest = async () => {
     );
   } else {
     reviewsReadyForSync.forEach(review => {
-      console.log(review);
-      //TODO sync with server
+      addReviewToDB(
+        review.restaurant_id,
+        review.name,
+        review.rating,
+        review.comments
+      );
     });
   }
 };

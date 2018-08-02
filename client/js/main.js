@@ -12,7 +12,39 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchNeighborhoods();
   fetchCuisines();
   registerServiceWorker();
+  determineOnlineStatus();
 });
+
+window.addEventListener('offline', () => {
+  showOfflineStatus();
+});
+
+window.addEventListener('online', () => {
+  removeOfflineStatus();
+});
+
+const determineOnlineStatus = () => {
+  if (!navigator.onLine) {
+    showOfflineStatus();
+  }
+};
+
+const showOfflineStatus = () => {
+  console.log('offline');
+  const alertOffline = document.createElement('div');
+  alertOffline.id = 'alertOffline';
+  alertOffline.className = 'offline';
+  alertOffline.textContent =
+    'You are offline but do not worry. You can still view visited content. ' +
+    'You can also add reviews and they will be synchronized when you are back online. Try it out!';
+  alertOffline.setAttribute('role', 'alert');
+  document.getElementById('footer').appendChild(alertOffline);
+};
+
+const removeOfflineStatus = () => {
+  console.log('online');
+  document.getElementById('alertOffline').remove();
+};
 
 const initMap = () => {
   self.newMap = L.map('map', {
