@@ -93,35 +93,48 @@ self.addEventListener('fetch', (/** @type {FetchEvent} */ event) => {
 });
 
 const removeItemsFromIDB = async () => {
-  idbKeyval.del('reviewsReadyForSync');
+  await idbKeyval.del('reviewsReadyForSync');
   console.log('Removed outgoing items for service worker from idb');
 };
 
 self.addEventListener('sync', event => {
-  console.log(event);
+  console.log('syncing event');
   if (event.tag === 'syncReviews') {
-    event.waitUntil(syncTest());
-    removeItemsFromIDB();
+    event.waitUntil(
+      syncReviewsWithServer()
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    );
   }
 });
 
-const syncTest = async () => {
-  console.log('Syncing Reviews...');
-
+/**
+ *
+ * @returns {Promise<string>}
+ */
+const syncReviewsWithServer = async () => {
+  console.log('syncing reviews');
   const reviewsReadyForSync = await idbKeyval.get('reviewsReadyForSync');
   if (reviewsReadyForSync === undefined) {
     console.log(
       'No reviews found in idb that are ready to be synced with server.'
     );
   } else {
-    reviewsReadyForSync.forEach(review => {
-      addReviewToDB(
+    reviewsReadyForSync.forEach(async review => {
+      console.log('adding new review from idb to server', review);
+      await addReviewToDB(
         review.restaurant_id,
         review.name,
         review.rating,
         review.comments
       );
     });
+    await removeItemsFromIDB();
+    return Promise.resolve('Sync IDB with server is done.');
   }
 };
 

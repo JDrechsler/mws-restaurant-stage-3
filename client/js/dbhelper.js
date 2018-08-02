@@ -242,8 +242,17 @@ class DBHelper {
       review.id = lastEntry.id + 1;
       let newStateReviewsIDB = [...currentStateReviewsIDB, review];
       await idbKeyval.set('reviewsData', newStateReviewsIDB);
-      navigator.serviceWorker.ready.then(swReg => {
-        return swReg.sync.register('syncReviews');
+      navigator.serviceWorker.ready.then(registration => {
+        registration.sync.register('syncReviews').then(
+          () => {
+            console.log('Background sync registration was successful.');
+          },
+          () => {
+            console.log(
+              'There was a problem with the registration of the background sync.'
+            );
+          }
+        );
       });
     }
   }
