@@ -192,7 +192,7 @@ const fillReviewsHTML = async restaurant => {
   let reviews = await DBHelper.fetchReviewsById(id);
   self.reviews = reviews;
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h2');
+  const title = document.createElement('h3');
   title.innerText = 'Reviews';
   title.tabIndex = 0;
   title.id = 'reviews';

@@ -23,11 +23,13 @@
       </h1>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb">
-      <li>
-        <a href="./">Home</a>
-      </li>
-    </ul>
+
+      <ul id="breadcrumb" aria-label="List of restaurant reviews" role="navigation">
+        <li>
+          <a href="./">Home</a>
+        </li>
+      </ul>
+
     <!-- End breadcrumb -->
     <!-- End nav -->
   </header>
@@ -49,7 +51,7 @@
       <table id="restaurant-hours" tabindex="0"></table>
       <p id="restaurant-address" tabindex="0"></p>
       <a href="#reviews" tabindex="0" class="skip-link" aria-label="Skip embedded Google Maps and go to the reviews section">Skip maps, go to reviews section</a>
-      <div id="map" aria-label="This is the embedded google maps view of the restaurant address."></div>
+      <div id="map" aria-label="This is the embedded google maps view of the restaurant address." role="application"></div>
     </section>
     <!-- end restaurant -->
     <!-- Beginning reviews -->
